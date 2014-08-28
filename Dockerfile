@@ -40,6 +40,11 @@ RUN mkdir -p /var/crowd-home && chmod 777 /var/crowd-home
 VOLUME /var/crowd-home
 EXPOSE 8095
 
+# Install MySQL Support for Crowd
+RUN wget -P /tmp http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.32.tar.gz
+RUN tar xzf /tmp/mysql-connector-java-5.1.32.tar.gz -C /tmp
+RUN cp /tmp/mysql-connector-java-5.1.32/mysql-connector-java-5.1.32-bin.jar /opt/atlassian-crowd-${CROWD_VERSION}/apache-tomcat/lib/mysql-connector-java-5.1.32-bin.jar
+
 # Clean up when done
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
