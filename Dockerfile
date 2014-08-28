@@ -31,9 +31,10 @@ ENV CROWD_VERSION 2.7.2
 RUN wget -P /tmp http://www.atlassian.com/software/crowd/downloads/binary/atlassian-crowd-${CROWD_VERSION}.tar.gz \
     && tar xzf /tmp/atlassian-crowd-${CROWD_VERSION}.tar.gz -C /opt
 RUN mkdir /etc/service/atlassian-crowd-${CROWD_VERSION} \
-    && echo "#!/bin/bash\n/opt/atlassian-crowd-${CROWD_VERSION}/bin/start-crowd.sh -fg" > /etc/service/atlassian-crowd-${CROWD_VERSION}/run \
+    && echo "#!/bin/bash\n/opt/atlassian-crowd-${CROWD_VERSION}/apache-tomcat/bin/catalina.sh run" > /etc/service/atlassian-crowd-${CROWD_VERSION}/run \
     && chmod +x /etc/service/atlassian-crowd-${CROWD_VERSION}/run
 RUN echo 'export CROWD_HOME="/var/crowd-home"' >> ~/.bashrc
+ADD crowd-init.properties /opt/atlassian-crowd-${CROWD_VERSION}/crowd-webapp/WEB-INF/classes/crowd-init.properties
 ENV CROWD_HOME /var/crowd-home
 RUN mkdir -p /var/crowd-home && chmod 777 /var/crowd-home
 VOLUME /var/crowd-home
