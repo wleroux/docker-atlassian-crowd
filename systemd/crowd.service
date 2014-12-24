@@ -1,0 +1,20 @@
+[Unit]
+Description=Atlassian Crowd
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker kill crowd
+ExecStartPre=-/usr/bin/docker rm crowd
+ExecStartPre=-/usr/bin/docker run --name crowd-data -v /var/crowd-home tianon/true:latest
+ExecStartPre=/usr/bin/docker start crowd-data
+ExecStart=/usr/bin/docker run --name crowd --rm --volumes-from crowd-data -p 8095:8095 atlassian-crowd 
+ExecStartPost=/usr/bin/etcdctl set /app/crowd/%m ${PUBLIC_IPV4}:8095
+ExecStop=/usr/bin/docker kill crowd
+ExecStopPost=/usr/bin/etcdctl rm /app/crowd/%m
+
+[X-Fleet]
+X-Conflicts=crowd.service
+
